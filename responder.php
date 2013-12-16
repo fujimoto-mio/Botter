@@ -1,6 +1,7 @@
 <?php
 //Dictionaryクラスの読み込み
 require_once("dictionary.php");
+require_once("util.php");
 //応答クラス
 
 
@@ -23,6 +24,9 @@ class Responder {
 	//受け取った文字列をそのまま返すメソッド
 	//機嫌値($mood)を渡せるように変更
 	function Response($text,$mood) {
+		
+		
+		
 		return $text;
 	}
 
@@ -137,6 +141,7 @@ class PatternResponder extends Responder {
 			var_dump($line."=");
 		}
 	}
+	
 	//パターン辞書を元に応答メッセージを作るメソッド
 	function Response($text/*, $mood*/) {
 
@@ -151,19 +156,66 @@ var_dump($res."=======");
 				return preg_replace("/%match%/", $ptn, $res);
 			}
 		}
-/*		foreach($this->dictionary->Pattern() as $ptn_item) {
-			if($ptn = $ptn_item->Match($text)) {
-				$res = $ptn_item->Choice($mood);
-				if($res==null) {next;}
-var_dump($ptn."==答例に「%match%/」という文字列があったら、マッチした====");
-				//応答例に「%match%/」という文字列があったら、マッチした文字列と置き換える
-				return preg_replace("/%match%/", $ptn, $res);
-			}
-		}
-*/
+
 	}
-
-
 }
 
+
+
+//TemplateResponderクラスの定義(Responderクラスを継承)
+class TemplateResponder extends Responder {
+
+
+	//テンプレート辞書を元に応答メッセージを作るメソッド
+	//引数$wordsに形態素解析の結果を渡す
+	function Response($text, $mood, $words) {
+		//文章に含まれるキーワード(名詞)を配列に格納
+		$keywords = array();
+		foreach($words as $k => $v) {
+			if(preg_match("/名詞/", $v->pos)) {
+				array_push($keywords, $v->surface);
+			}
+		}
+		$count = count($keywords);	//キーワードの数を数える
+		//辞書に使えるテンプレートがあったら
+		if($count > 0 && $templates = $this->dictionary->template[$count]) {
+			//キーワード数にマッチするテンプレートを辞書からランダムに選択する
+			$template = $templates[rand(0, count($templates) - 1)];
+			///「%noun%/」をキーワードに置き換える
+			foreach($keywords as $v) {
+				$templ = preg_replace("/%noun%/", $v, $template, 1);
+				$template = $templ;
+			}
+			return $template;
+		}
+		//テンプレートがなかったら、ランダム辞書から応答例を持ってくる
+//		if(USE_RANDOM_DIC) {return Util::Select_random($this->dictionary->random);}
+
+	}
+}
+
+
+//MarkovResponderクラスの定義(Responderクラスを継承)
+class MarkovResponder extends Responder {
+
+	function Response($text, $mood, $words) {
+	$keywords=array();
+		//キーワード(名詞)の抽出
+		foreach($words as $v) {
+			if(preg_match("/名詞/", $v->pos)) {
+				array_push($keywords, $v->surface);
+			}
+		}
+		//キーワードから文章を生成し表示
+		if(count($keywords)) {
+			$keyword = $keywords[rand(0, count($keywords) - 1)];
+			$res = $this->dictionary->markov->Generate(chop($keyword));
+			if($res) {return $res;}
+		}
+	//応答例がなかったら、ランダム辞書から応答例を持ってくる
+//あとでつかう
+	///	if(USE_RANDOM_DIC) {return Util::Select_random($this->dictionary->random);}
+	}
+
+}
 ?>

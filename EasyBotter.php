@@ -733,7 +733,6 @@ class EasyBotter
 	function Mentions($cron = 2, $user){
 		$this->myBot = new Bot();
 
-
         //タイムラインを取得
         $timeline = $this->getFriendsTimeline($this->_latestReplyTimeline,100);       
         $timeline2 = $this->getRecentTweets($timeline, $cron);   
@@ -839,7 +838,6 @@ class EasyBotter
 				}
 			}
 		}
-
 			
 		$this->ProfileImage();
 			
@@ -848,10 +846,129 @@ class EasyBotter
 
 		//30分(1800秒)更新がない返信カウンタファイルを削除する
 		$this->myBot->DeleteFile("Count", 1800);
-
-		
 	}
 	
+	
+	
+	function StudyBot($cron = 2, $user){
+		$this->myBot = new Bot();
+
+        //タイムラインを取得
+        $timeline = $this->getFriendsTimeline($this->_latestReplyTimeline,100);       
+        $timeline2 = $this->getRecentTweets($timeline, $cron);   
+        $timeline2 = $this->selectTweets($timeline2);
+        $timeline2 = array_reverse($timeline2);        
+
+
+		//フォロー・リムーブ処理
+		//最後に取得したリプライのIDを取得する
+		$since_id = $this->myBot->ReadData("Mentions");
+		//リプライ済みユーザーを格納する配列の初期化
+		$replied_users = array();
+		//ボット相手に返信する上限回数
+		$reply_limit = 3;
+		//無視するユーザーIDの一覧を取得する
+		$pass_list = $this->myBot->ReadData("Pass");
+
+		var_dump("=======================================================");
+
+		//ボット宛てのリプライ処理
+		//タイムラインの処理
+		foreach($timeline2 as $key=>$Timeline ) {
+			$txt = null;
+			//発言のIDの取得
+			$sid = $Timeline["id"];
+			//var_dump($Timeline);
+					
+			//ユーザーのスクリーン名の取得
+			$screen_name = $Timeline["user"]["screen_name"];
+			
+			//送信元の取得
+			$source = $Timeline["source"];
+			//ユーザーIDの取得
+			$uid = $Timeline["user"]["id"];
+			
+			//発言本文の余分なスペースを消し、半角カナを全角カナ、全角英数を半角英数に変換
+			$text = mb_convert_kana(trim($Timeline["text"]), "rnKHV", "utf-8");
+			//ボット自身の発言、RT、QTに反応しないようにする
+			if($screen_name == $user || preg_match("/(R|Q)T( |:)/", $text)) {
+				var_dump($screen_name."=".$user."continue== 自身の発言、RT、QTに反応しないよう======");
+				continue;
+			}
+			
+			//同じ相手でリプライ済みなら返信しないようにする
+			//if(in_array($screen_name, $replied_users)) {continue;}
+						
+			//Webからの投稿以外なら返信カウンタをチェックする
+			if(!stristr($source, 'web')) {
+				//返信カウンタファイルの読み込み
+				$reply_cnt_file = $this->myBot->ReadData($uid."Count");
+				$reply_cnt = $reply_cnt_file[0];
+				if(!$reply_cnt) {$reply_cnt = 0;}
+				//上限値に達していたら
+				if($reply_cnt >= $reply_limit) {
+					//返信カウンタファイルを削除して、返信処理をスキップする
+					unlink($reply_cnt_file);
+					continue;
+				}
+			}
+
+			//無視するユーザーIDが一致したら、返信処理をスキップする
+			foreach($pass_list as $p) {if($p == $uid) {continue 2;}}
+		
+			
+			//取得したテキストを表示コマンドプロンプトでの出力確認用
+			if(DEBUG_MODE) {var_dump($text);}
+			var_dump($screen_name."==".$user."==!===================================================");
+			$input = $screen_name;
+			//相互フォローしているユーザーの発言、またはボット宛てのリプライなら
+		 	if(stristr($input, "@".$user) || !strstr($input, "@")) {
+		
+				//現在の機嫌値をファイルから読み込んでセットする
+				//if(MOOD_MODE){$myBot->emotion->User_mood($uid); }
+				var_dump($input."=".$user."フォローしているユーザーの発言、またはボット宛てのリプライなら==");
+						
+				//送信する文字列の取得
+				//引数$userにはユーザー名を渡す
+				$txt=$this->myBot->Conversation($text);
+				//$txt=$myBot->Conversation($text,$user);
+//				var_dump($txt."=引数userにはユーザー名を渡す==");
+
+				
+				//コマンドプロンプトでの出力確認用
+				$text = $this->myBot->ResponderName()."(".$this->myBot->emotion->mood.") -> ".$txt;
+				var_dump($text."=出力確認用==");
+				
+				//$txtが空でなかったら送信する
+				if($txt){
+					var_dump($txt."=が空でなかったら送信する==");
+					                //idなどの変換
+                	$status = $this->convertText($txt);    
+                	//フッターを追加
+                	$status .= $this->_footer;                       
+                	$this->showResult($this->setUpdate(array("status"=>$status)), $status);            
+
+						
+					
+					//$this->myBot->Post("@".$screen_name." ".$txt, $sid);
+					//返信済みユーザーを配列に記憶する
+					$replied_users[] = $screen_name;
+		
+					//返信カウンタを+1して保存する
+					$reply_cnt++;
+					$this->myBot->WriteData($screen_name."Count", $reply_cnt);
+				}
+			}
+		}
+			
+		$this->ProfileImage();
+			
+		//最後に取得した発言のIDをファイルに記録する
+		$this->myBot->WriteData("Since", $sid);
+
+		//30分(1800秒)更新がない返信カウンタファイルを削除する
+		$this->myBot->DeleteFile("Count", 1800);
+	}
 	
 	
 	

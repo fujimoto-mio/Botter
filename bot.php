@@ -44,8 +44,9 @@ $response = $eb->replyTimeline(2,"reply_pattern.php");
 //=============================
 $user = "preciousone_p1";
 //$response = $eb->emotion(2, $user);
-$response = $eb->Mentions(2, $user);
+//$response = $eb->Mentions(2, $user);
 //$response = $myBot->replyTimeline(2,"reply_pattern.php");
+$response = $eb->StudyBot(2, $user);
   
 
    

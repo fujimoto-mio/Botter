@@ -1,4 +1,7 @@
 <?php
+//Utilファイルの読み込み
+require_once("util.php");
+
 //Reponderクラスの読み込み
 require_once("responder.php");
 
@@ -8,6 +11,9 @@ require_once("dictionary.php");
 //emotionクラスの読み込み
 require_once("emotion.php");
 
+//morphemeクラスの読み込み
+require_once("morpheme.php");
+
 
 
 //Botクラスの定義
@@ -16,7 +22,7 @@ class Bot {
 	//メンバ変数
 	var $user;	//ユーザー名を格納する変数
 	var $Obj;	//OAuthオブジェクトを格納する変数
-	//var $responder;	//Responderオブジェクトを格納する変数
+	var $responder;	//Responderオブジェクトを格納する変数
 
 
 	var $rand_responder;	//RandomResponderオブジェクトを格納する変数
@@ -24,7 +30,9 @@ class Bot {
 	var $what_responder;	//WhatResponderオブジェクトを格納する変数
 	var $greet_responder;	//GreetingResponderオブジェクトを格納する変数
 	var $pattern_responder;	//PatternResponderオブジェクトを格納する変数
-
+	var $templ_responder;	//TemplateResponderオブジェクトを格納する変数
+	var $markov_responder;	//MarkovResponderオブジェクトを格納する変数
+	
 	var $dic;	//Dictionaryオブジェクトを格納する変数
 	var $emotion;	//Emotionオブジェクトを格納する変数
 
@@ -53,16 +61,14 @@ class Bot {
 		//WhatResponderオブジェクトの生成
 		$this->what_responder = new WhatResponder('What', $this->dic);
 		//GreetingResponderオブジェクトの生成
-		///$this->greet_responder = new GreetingResponder('Greeting', $this->dic);
-		//PatternResponderオブジェクトの生成
-		///$this->pattern_responder = new PatternResponder('Pattern', $this->dic);
-
-		//RandomResponderを既定のResponderにする
-		////$this->responder = $this->rand_responder;
-
     	$this->greet_responder = new GreetingResponder('Greeting');
+		//PatternResponderオブジェクトの生成
     	$this->pattern_responder = new PatternResponder('Pattern');
 
+		//TemplateResponderオブジェクトの生成
+		$this->template_responde = new TemplateResponder('Template', $this->dic);
+    	//MarkovResponderオブジェクトの生成
+		$this->markov_responder = new MarkovResponder('Markov', $this->dic);
 
 
 
@@ -79,14 +85,41 @@ class Bot {
 	function Conversation($input) {
 
 		//ResponderにPatternResponderを使う
-		$this->responder = $this->pattern_responder;
+		//$this->responder = $this->pattern_responder;
 		
-		//パターンマッチを行い感情を変動させる
-		//$this->emotion->Update($input);
-//var_dump($this->responder ."==キストをResponderオブジェクトに渡すメソッド(リプライ用)======");
-		
-		return $this->responder->Response($input);//, $this->emotion->mood);
+		$this->responder = $this->markov_responder;
+		//宛先のユーザ名(@xxxx)を消す
+		$input = trim(preg_replace("/@[a-zA-Z0-9]+/", "", $input));
 
+/*
+//定期的になにかツイートする
+//$min = date("i");	//いま何分か取得
+//if($min == 0 || $min == 20 || $min == 40) {
+//送信する文字列の取得
+$say = $this->myBot->Speaks("");
+		
+$opt = array();
+$opt['status'] = $say;
+
+//$repは相手にリプライすaる場合にリプライ元の発言のIDを指定
+//リプライ元の発言とリプライする相手のユーザー名が一致しなければならない
+		
+//ツイートを送信
+//if($say) {//$this->myBot->Post($say);}
+//	  setUpdate($opt);
+//}
+             
+  $text =  $this->myBot->ResponderName()."(".$this->myBot->emotion->mood.") -> ".$say;
+*/				
+
+	
+		//パターンマッチを行い感情を変動させる
+		$this->emotion->Update($input);
+		//Studyメソッドにテキストを渡し学習する
+		//引数$wordsで形態素解析の結果を渡せるように変更
+		$this->dic->Study($input, $words);
+		
+		return $this->responder->Response($input);
 	}
 
 
@@ -140,6 +173,11 @@ class Bot {
 		//PHP配列に変換
 		$result = json_decode($req);
 		return $result;
+	}
+	
+	//DictionaryオブジェクトのSaveメソッドにアクセスするためのメソッド
+	function Save() {
+		$this->dic->Save();
 	}
 	
 	

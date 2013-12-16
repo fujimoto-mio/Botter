@@ -1,0 +1,4 @@
+2	私の%noun%は%noun%です。
+2	あなたの%noun%は%noun%ですね。
+1	%noun%はどうしたの？
+1	%noun%

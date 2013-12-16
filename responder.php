@@ -77,7 +77,7 @@ class RandomResponder extends Responder {
 		//乱数に応じた辞書ファイルを読み込む
 		$dic = "./dic/RandomDic".$no.".txt";
 		if(!file_exists($dic)) {
-			die("ファイルが開けません2。");
+			die("ファイルが開けません。");
 		}
 		$this->text = file($dic);
 	}
@@ -124,7 +124,7 @@ class PatternResponder extends Responder {
 		$this->name = $name;
 		$dic = "./dic/PatternDic1.txt";
 		if(!file_exists($dic)) {
-			die("ファイルが開けません1。");
+			die("ファイルが開けません。");
 		}
 		$file = file($dic);
 	

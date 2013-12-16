@@ -38,7 +38,7 @@ class Dictionary {
 		//パターン辞書ファイルを読み込む
 		$dic = PATTERN_DIC;
 		if(!file_exists($dic)) {
-			die("ファイルが開けません。10");
+			die("ファイルが開けません。");
 		}
 		$file = file($dic);
 
@@ -62,7 +62,7 @@ class Dictionary {
 	function RandomLoad() {
 		$dic = RANDOM_DIC;
 		if(!file_exists($dic)) {
-			die("ファイルが開けません。9");
+			die("ファイルが開けません。");
 		}
 		$file = file($dic);
 		//ランダム辞書を連想配列(ハッシュ)に格納する
@@ -77,7 +77,7 @@ class Dictionary {
 	function TemplateLoad() {
 		$dic = TAMPLATE_DIC;
 		if(!file_exists($dic)) {
-			die("ファイルが開けません。8");
+			die("ファイルが開けません。");
 		}
 		$file = file($dic);
 		foreach($file as $line) {
@@ -101,7 +101,7 @@ class Dictionary {
 	function ProhibitLoad() {
 		$dic = PROHIBIT_DIC;
 		if(!file_exists($dic)) {
-			die("ファイルが開けません。7");
+			die("ファイルが開けません。");
 		}
 		$file = file($dic);
 		//禁止語辞書を連想配列(ハッシュ)に格納する
@@ -202,7 +202,7 @@ class Dictionary {
 		//ランダム辞書の保存
 		$dat = RANDOM_DIC;
 		if(!file_exists($dat)) {
-			die("ファイルが開けません。6");
+			die("ファイルが開けません。");
 		}
 		$fdat = fopen($dat, 'w');
 		flock($fdat, LOCK_EX);
@@ -215,7 +215,7 @@ class Dictionary {
 		//パターン辞書の保存
 		$dat = PATTERN_DIC;
 		if(!file_exists($dat)) {
-			die("ファイルが開けません。5");
+			die("ファイルが開けません。");
 		}
 		$fdat = fopen($dat, 'w');
 		flock($fdat, LOCK_EX);
@@ -230,7 +230,7 @@ class Dictionary {
 		//テンプレート辞書の保存
 		$dat = TAMPLATE_DIC;
 		if(!file_exists($dat)) {
-			die("ファイルが開けません4。");
+			die("ファイルが開けません。");
 		}
 
 

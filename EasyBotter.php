@@ -2,6 +2,20 @@
 
 //Botクラスの読み込み
 require_once("bot_core.php");
+
+//Reponderクラスの読み込み
+require_once("responder.php");
+
+//Dictionaryクラスの読み込み
+require_once("dictionary.php");
+
+//emotionクラスの読み込み
+require_once("emotion.php");
+
+//morphemeクラスの読み込み
+require_once("morpheme.php");
+
+
 //デバッグモードのON/OFF(1:ON 0:OFF)
 define("DEBUG_MODE", "1");
 
@@ -12,20 +26,22 @@ define("DEBUG_MODE", "1");
 class EasyBotter
 {
 	var $myBot;
+	var $dic;
+	var $emotion;
+	
+	private $_screen_name;
+	private $_consumer_key;
+	private $_consumer_secret;
+	private $_access_token;
+	private $_access_token_secret;
+	private $_replyLoopLimit;
+	private $_footer;
+    private $_dataSeparator;
+	private $_tweetData;        
+    private $_replyPatternData;        
+    private $_logDataFile;
+    private $_latestReply;
 
-        private $_screen_name;
-        private $_consumer_key;
-        private $_consumer_secret;
-        private $_access_token;
-        private $_access_token_secret;        
-        private $_replyLoopLimit;
-        private $_footer;
-        private $_dataSeparator;        
-        private $_tweetData;        
-        private $_replyPatternData;        
-        private $_logDataFile;
-        private $_latestReply;
-        
     function __construct()
     {                        
         //$dir = getcwd();
@@ -853,7 +869,7 @@ class EasyBotter
 	function StudyBot($cron = 2, $user){
 		$this->myBot = new Bot();
 
-        //タイムラインを取得
+		//タイムラインを取得
         $timeline = $this->getFriendsTimeline($this->_latestReplyTimeline,100);       
         $timeline2 = $this->getRecentTweets($timeline, $cron);   
         $timeline2 = $this->selectTweets($timeline2);
@@ -870,7 +886,7 @@ class EasyBotter
 		//無視するユーザーIDの一覧を取得する
 		$pass_list = $this->myBot->ReadData("Pass");
 
-		var_dump("=======================================================");
+		var_dump("===================================");
 
 		//ボット宛てのリプライ処理
 		//タイムラインの処理
@@ -919,20 +935,22 @@ class EasyBotter
 			
 			//取得したテキストを表示コマンドプロンプトでの出力確認用
 			if(DEBUG_MODE) {var_dump($text);}
-			var_dump($screen_name."==".$user."==!===================================================");
-			$input = $screen_name;
-			//相互フォローしているユーザーの発言、またはボット宛てのリプライなら
-		 	if(stristr($input, "@".$user) || !strstr($input, "@")) {
+			  var_dump($screen_name."==".$user."====!===========");
+			  $input = $screen_name;
+			  //相互フォローしているユーザーの発言、またはボット宛てのリプライなら
+		 	  if(stristr($input, "@".$user) || !strstr($input, "@")) {
 		
 				//現在の機嫌値をファイルから読み込んでセットする
-				//if(MOOD_MODE){$myBot->emotion->User_mood($uid); }
+				//if(MOOD_MODE){
+				$this->myBot->emotion->User_mood($user);
+				//}
 				var_dump($input."=".$user."フォローしているユーザーの発言、またはボット宛てのリプライなら==");
 						
 				//送信する文字列の取得
 				//引数$userにはユーザー名を渡す
 				$txt=$this->myBot->Conversation($text);
-				//$txt=$myBot->Conversation($text,$user);
-//				var_dump($txt."=引数userにはユーザー名を渡す==");
+				//$txt=$this->myBot->Conversation($text,$user);
+				var_dump($txt."=を".$user."に渡す==");
 
 				
 				//コマンドプロンプトでの出力確認用
@@ -957,7 +975,7 @@ class EasyBotter
 					//返信カウンタを+1して保存する
 					$reply_cnt++;
 					$this->myBot->WriteData($screen_name."Count", $reply_cnt);
-				}
+			  }
 			}
 		}
 			

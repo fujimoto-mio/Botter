@@ -12,7 +12,8 @@ class Responder {
 	var $name;	//オブジェクト名を格納する変数
 	var $dictionary; //Dictionaryオブジェクトを格納する変数
 	var $pattern = array();
-
+	
+	
 
 	//コンストラクタ(初期化用メソッド)
 	//Dictionaryオブジェクトを渡せるように変更

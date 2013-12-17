@@ -1,4 +1,6 @@
 <?php
+//Dictionaryクラスの読み込み
+require_once("dictionary.php");
 
 //定数の定義
 define("MODE_MIN", "-15");	//機嫌値下限
@@ -17,6 +19,10 @@ class Emotion {
 
 	//コンストラクタ(初期化用メソッド)
 	function Emotion($dictionary) {
+
+		//Dictionaryオブジェクトの生成
+		$this->dictionary = new Dictionary();
+
 		//パターン辞書オブジェクトを格納する
 		$this->dictionary = $dictionary;
 		//現在の機嫌値を読み込む
@@ -32,11 +38,13 @@ class Emotion {
 	//会話によって機嫌値を変動されるメソッド
 	function Update($input) {
 		//パターン辞書の要素を繰り返し処理する
-		foreach($this->dictionary->Pattern() as $ptn_item) {
+var_dump($this->dictionary->Pattern() );
+		foreach($this->dictionary->Pattern() as $ptn_item => $value) {
 			//パターンマッチを行う
-var_dump($ptn_item ."===ターンマッチを行う===========");
-						if($ptn_item->Match($input)) {
+			var_dump($input ."===Debug要 Pattern()の中身がからっぽです。");
+			if($ptn_item->Match($input)) {
 				//マッチしたらAdjust_moodメソッドで機嫌値を変動させる
+			var_dump($input ."===Debug要 Pattern()の中身がからっぽです。");
 				$this->Adjust_mood($ptn_item->modify);
 				break;
 			}

@@ -18,12 +18,10 @@ require_once("morpheme.php");
 
 //Botクラスの定義
 class Bot {
-
 	//メンバ変数
 	var $user;	//ユーザー名を格納する変数
 	var $Obj;	//OAuthオブジェクトを格納する変数
 	var $responder;	//Responderオブジェクトを格納する変数
-
 
 	var $rand_responder;	//RandomResponderオブジェクトを格納する変数
 	var $time_responder;	//TimeResponderオブジェクトを格納する変数
@@ -50,8 +48,6 @@ class Bot {
 		//Emotionオブジェクトの生成
 		$this->emotion = new Emotion($this->dic);
 
-
-
 		//Responderオブジェクトを生成する際にDictionaryオブジェクトを渡す
 
 		//RandomResponderオブジェクトの生成
@@ -69,9 +65,6 @@ class Bot {
 		$this->template_responde = new TemplateResponder('Template', $this->dic);
     	//MarkovResponderオブジェクトの生成
 		$this->markov_responder = new MarkovResponder('Markov', $this->dic);
-
-
-
 	}
 	
 	//テキストをResponderオブジェクトに渡すメソッド
@@ -85,40 +78,21 @@ class Bot {
 	function Conversation($input) {
 
 		//ResponderにPatternResponderを使う
-		//$this->responder = $this->pattern_responder;
+		$this->responder = $this->pattern_responder;
 		
-		$this->responder = $this->markov_responder;
+//		$this->responder = $this->markov_responder;
 		//宛先のユーザ名(@xxxx)を消す
 		$input = trim(preg_replace("/@[a-zA-Z0-9]+/", "", $input));
-
-/*
-//定期的になにかツイートする
-//$min = date("i");	//いま何分か取得
-//if($min == 0 || $min == 20 || $min == 40) {
-//送信する文字列の取得
-$say = $this->myBot->Speaks("");
-		
-$opt = array();
-$opt['status'] = $say;
-
-//$repは相手にリプライすaる場合にリプライ元の発言のIDを指定
-//リプライ元の発言とリプライする相手のユーザー名が一致しなければならない
-		
-//ツイートを送信
-//if($say) {//$this->myBot->Post($say);}
-//	  setUpdate($opt);
-//}
-             
-  $text =  $this->myBot->ResponderName()."(".$this->myBot->emotion->mood.") -> ".$say;
-*/				
 
 	
 		//パターンマッチを行い感情を変動させる
 		$this->emotion->Update($input);
 		//Studyメソッドにテキストを渡し学習する
 		//引数$wordsで形態素解析の結果を渡せるように変更
+		var_dump("===Debug要引数wordsがありません=========");
 		$this->dic->Study($input, $words);
 		
+		var_dump("===Debug要 Response($input)用に変更しないといけないかも=========");
 		return $this->responder->Response($input);
 	}
 

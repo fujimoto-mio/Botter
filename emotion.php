@@ -38,13 +38,13 @@ class Emotion {
 	//会話によって機嫌値を変動されるメソッド
 	function Update($input) {
 		//パターン辞書の要素を繰り返し処理する
-var_dump($this->dictionary->Pattern() );
+		var_dump($this->dictionary->Pattern() );
 		foreach($this->dictionary->Pattern() as $ptn_item => $value) {
 			//パターンマッチを行う
-			var_dump($input ."===Debug要 Pattern()の中身がからっぽです。");
+var_dump($input ."===Debug要 Pattern()の中身がからっぽです。Match判定が必要です");
 			if($ptn_item->Match($input)) {
 				//マッチしたらAdjust_moodメソッドで機嫌値を変動させる
-			var_dump($input ."===Debug要 Pattern()の中身がからっぽです。");
+var_dump($input ."===Debug要 Pattern()の中身がからっぽです。");
 				$this->Adjust_mood($ptn_item->modify);
 				break;
 			}

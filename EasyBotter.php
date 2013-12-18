@@ -940,8 +940,8 @@ class EasyBotter
 				}
 			}
 
-//			//無視するユーザーIDが一致したら、返信処理をスキップする
-//			foreach($pass_list as $p) {if($p == $uid) {continue 2;}}
+			//無視するユーザーIDが一致したら、返信処理をスキップする
+			foreach($pass_list as $p) {if($p == $uid) {continue 2;}}
 		
 			
 			//取得したテキストを表示コマンドプロンプトでの出力確認用
@@ -963,7 +963,6 @@ class EasyBotter
 				//$txt=$this->myBot->Conversation($text,$user);
 				var_dump($txt."=を".$user."に渡す==");
 
-				
 				//コマンドプロンプトでの出力確認用
 				$text = $this->myBot->ResponderName()."(".$this->myBot->emotion->mood.") -> ".$txt;
 				var_dump($text."=出力確認用==");
@@ -976,8 +975,6 @@ class EasyBotter
                 	//フッターを追加
                 	$status .= $this->_footer;                       
                 	$this->showResult($this->setUpdate(array("status"=>$status)), $status);            
-
-						
 					
 					//$this->myBot->Post("@".$screen_name." ".$txt, $sid);
 					//返信済みユーザーを配列に記憶する

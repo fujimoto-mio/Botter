@@ -31,7 +31,6 @@ class Web_API {
 
 	//Web APIのリクエストURLを生成するメソッド
 	function Request($url, $params) {
-
 		//パラメーターと値をURLエンコードする
 		$encoded_params = array();
 		foreach($params as $k => $v) {

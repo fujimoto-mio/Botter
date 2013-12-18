@@ -940,8 +940,8 @@ class EasyBotter
 				}
 			}
 
-			//無視するユーザーIDが一致したら、返信処理をスキップする
-			foreach($pass_list as $p) {if($p == $uid) {continue 2;}}
+//			//無視するユーザーIDが一致したら、返信処理をスキップする
+//			foreach($pass_list as $p) {if($p == $uid) {continue 2;}}
 		
 			
 			//取得したテキストを表示コマンドプロンプトでの出力確認用

@@ -91,7 +91,7 @@ class Bot {
 		//Studyメソッドにテキストを渡し学習する
 		//引数$wordsで形態素解析の結果を渡せるように変更
 		var_dump("===Debug要引数wordsがありません=========");
-//		$this->dic->Study($input, $words);
+		$this->dic->Study($input, $words);
 		
 		var_dump("===Debug要 Response($input)用に変更しないといけないかも=========");
 		return $this->responder->Response($input);

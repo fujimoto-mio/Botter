@@ -37,20 +37,20 @@ class Emotion {
 
 	//会話によって機嫌値を変動されるメソッド
 	function Update($input) {
-		//パターン辞書の要素を繰り返し処理する
-		var_dump($this->dictionary->Pattern() );
-		foreach($this->dictionary->Pattern() as $ptn_item => $value) {
-			//パターンマッチを行う
-var_dump($input ."===Debug要 Pattern()の中身がからっぽです。Match判定が必要です");
-			if($ptn_item->Match($input)) {
+		//パターン辞書の要素を繰り返し処理する バカ|馬鹿 かわいい|可愛い  めぐ
+		//var_dump($this->dictionary->Pattern() );
+		foreach($this->dictionary->Pattern() as $PatternItem ) {
+		  	//パターンマッチを行う
+         	$tmp = preg_match("/".$PatternItem->pattern."/", $input);
+			//var_dump($tmp);
+			if($tmp) {
 				//マッチしたらAdjust_moodメソッドで機嫌値を変動させる
-var_dump($input ."===Debug要 Pattern()の中身がからっぽです。");
-				$this->Adjust_mood($ptn_item->modify);
+				//var_dump($PatternItem->modify."===機嫌値です。");
+				$this->Adjust_mood($PatternItem->modify);
 				break;
 			}
 		}
-
-var_dump($this->mood ."===機嫌を徐々に平静な状態===========");
+		echo $this->mood ."===機嫌を徐々に平静な状態====";
 
 		//機嫌を徐々に平静な状態(機嫌値0)に回復させる処理
 		if($this->mood < 0) {

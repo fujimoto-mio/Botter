@@ -85,8 +85,8 @@ class Dictionary {
 			//タブで分割したテキストのそれぞれを$key、$valに代入
 			list($key, $val) = split("\t", rtrim($line, "\n"));
 			//連想配列(ハッシュ)に要素を格納する
-//			if(!isset($this->template[$key])) {$this->template[$key]=array();}
-			if(!$this->template[$key]) {$this->template[$key]=array();}
+			if(!isset($this->template[$key])) {$this->template[$key]=array();}
+//			if(!$this->template[$key]) {$this->template[$key]=array();}
 			array_push($this->template[$key], $val);
 		}
 	}

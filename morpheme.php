@@ -24,7 +24,7 @@ class Yahoo_morph {
 		$api = new Web_API("Yahoo_Morph");
 		
 		$this->xml = $api->Request($url, $params);
-		var_dump("QQQ".$this->xml );
+        //foreach ($this->xml->ma_result->word_list->word as $cur){var_dump("debug".$cur->surface); }		
 		return $this->xml->ma_result->word_list->word;
 	}
 

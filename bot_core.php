@@ -81,14 +81,14 @@ class Bot {
 		//$this->responder = $this->markov_responder;
 
 		//宛先のユーザ名(@xxxx)を消す
-		$input = trim(preg_replace("/@[a-zA-Z0-9]+/", "", $input));
+		$input = trim(preg_replace("/@[a-zA-Z0-9_]+/", "", $input));
 
 		//パターンマッチを行い感情を変動させる
 		$this->emotion->Update($input);
+		
 			
 		//形態素解析の結果を取得
 		$words = $this->yahoo_morph->Request($input);
-		var_dump("SSS=".$words);
 		
 		//Studyメソッドにテキストを渡し学習する
 		//引数$wordsで形態素解析の結果を渡せるように変更

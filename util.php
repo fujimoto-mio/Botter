@@ -19,7 +19,6 @@ class Util {
 
 
 //Webリクエスト
-
 class Web_API {
 
 	var $res;	//取得結果を格納する変数

@@ -48,6 +48,9 @@ class Bot {
 		//Responderオブジェクトを生成する際にDictionaryオブジェクトを渡す
         $this->yahoo_morph = new Yahoo_morph();
 		
+		//Responderオブジェクトの生成
+		$this->null_responder = new Responder('Null', $this->dic);
+				
 		//RandomResponderオブジェクトの生成
 		$this->rand_responder = new RandomResponder('Random', $this->dic);
 		//TimeResponderオブジェクトの生成
@@ -75,10 +78,26 @@ class Bot {
 	//テキストをResponderオブジェクトに渡すメソッド(リプライ用)
 	function Conversation($input) {
 
-		//Responderに使う
-		//$this->responder = $this->template_responde;
-		//$this->responder = $this->pattern_responder;
-		$this->responder = $this->markov_responder;
+		//Responderをランダムに切り替える
+		$sel = rand(1, 100); //乱数生成
+
+		//乱数の値によってResponderを切り替える
+		if($sel > 0 && $sel < 10) {
+			echo "pattern";
+			$this->responder = $this->pattern_responder;
+		} elseif($sel >= 10 && $sel < 20) {
+			echo "template";
+			$this->responder = $this->template_responde;
+		} elseif($sel >= 20 && $sel <= 70) {
+			echo "markov";
+			$this->responder = $this->markov_responder;
+		}elseif($sel >= 70 && $sel < 80) {
+			echo "rand";
+			$this->responder = $this->rand_responder;
+		} else {
+			echo "null";
+			$this->responder = $this->null_responder;
+		}
 
 		//宛先のユーザ名(@xxxx)を消す
 		$input = trim(preg_replace("/@[a-zA-Z0-9_]+/", "", $input));

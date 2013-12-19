@@ -74,6 +74,7 @@ class Markov {
 			$prifix2 = $suffix;
 			$loop += 1;
 		}
+		var_dump("マルコフ連鎖ー実行Generate");
 		//$words格納された単語を1つにつなげて文章を生成する
 		return join("", $words);
 	}
@@ -81,6 +82,9 @@ class Markov {
 
 	//辞書($dic)にサフィクスを追加するメソッド
 	private function Add_Suffix($prifix1, $prifix2, $suffix) {
+		var_dump("##".$prifix1."##". $prifix2."##".$suffix);
+//		if(!isset($this->dic[$prifix1])) {$this->dic[$prifix1] = array();}
+//		if(!isset($this->dic[$prifix1][$prifix2])) {$this->dic[$prifix1][$prifix2] = array();}
 		if(!$this->dic[$prifix1]) {$this->dic[$prifix1] = array();}
 		if(!$this->dic[$prifix1][$prifix2]) {$this->dic[$prifix1][$prifix2] = array();}
 		array_push($this->dic[$prifix1][$prifix2], $suffix);
@@ -89,6 +93,7 @@ class Markov {
 
 	//文書の先頭の単語をハッシュ$startsに登録するメソッド
 	private function Add_Start($prifix1) {
+//		if(!isset($this->starts[$prifix1])) {$this->starts[$prifix1] = 0;}
 		if(!$this->starts[$prifix1]) {$this->starts[$prifix1] = 0;}
 		$this->starts[$prifix1] += 1;
 	}

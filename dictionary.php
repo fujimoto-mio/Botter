@@ -85,6 +85,7 @@ class Dictionary {
 			//タブで分割したテキストのそれぞれを$key、$valに代入
 			list($key, $val) = split("\t", rtrim($line, "\n"));
 			//連想配列(ハッシュ)に要素を格納する
+//			if(!isset($this->template[$key])) {$this->template[$key]=array();}
 			if(!$this->template[$key]) {$this->template[$key]=array();}
 			array_push($this->template[$key], $val);
 		}
@@ -124,11 +125,11 @@ class Dictionary {
 			}
 		}
 		
-		foreach ($words->ma_result->word_list->word as $cur){
+		/*foreach ($words->ma_result->word_list->word as $cur){
 			//echo pg_escape_string($cur->surface)." | ";
 			var_dump("analize.debug=".$cur->surface);
 		}
-		
+		*/
 
 		$this->Study_Random($text);
 		$this->Study_Pattern($text,$words);

@@ -54,9 +54,6 @@ class Get_content extends Web_API {
 
 	//リクエストを送信して結果を取得するメソッド
 	function Load_file($req) {
-				var_dump($req."??QQQ=" );
-		
-//		return file_get_contents($req);
 		return simplexml_load_file($req);
 	}
 

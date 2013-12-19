@@ -195,9 +195,10 @@ class TemplateResponder extends Responder {
 
 //MarkovResponderクラスの定義(Responderクラスを継承)
 class MarkovResponder extends Responder {
-
 	function Response($text, $mood, $words) {
-	$keywords=array();
+		$this->util = new Util();
+
+		$keywords=array();
 		//キーワード(名詞)の抽出
 		foreach($words as $v) {
 			if(preg_match("/名詞/", $v->pos)) {
@@ -210,9 +211,9 @@ class MarkovResponder extends Responder {
 			$res = $this->dictionary->markov->Generate(chop($keyword));
 			if($res) {return $res;}
 		}
-	//応答例がなかったら、ランダム辞書から応答例を持ってくる
-//あとでつかう
-	///	if(USE_RANDOM_DIC) {return Util::Select_random($this->dictionary->random);}
+		//応答例がなかったら、ランダム辞書から応答例を持ってくる
+		//if(USE_RANDOM_DIC) {
+		return $this->util->Select_random($this->dictionary->random);
 	}
 
 }

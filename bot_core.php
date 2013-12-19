@@ -76,9 +76,9 @@ class Bot {
 	function Conversation($input) {
 
 		//Responderに使う
-		$this->responder = $this->template_responde;
+		//$this->responder = $this->template_responde;
 		//$this->responder = $this->pattern_responder;
-		//$this->responder = $this->markov_responder;
+		$this->responder = $this->markov_responder;
 
 		//宛先のユーザ名(@xxxx)を消す
 		$input = trim(preg_replace("/@[a-zA-Z0-9_]+/", "", $input));

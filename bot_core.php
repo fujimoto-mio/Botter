@@ -22,6 +22,7 @@ class Bot {
 	var $user;	//ユーザー名を格納する変数
 	var $Obj;	//OAuthオブジェクトを格納する変数
 	var $responder;	//Responderオブジェクトを格納する変数
+	var $words;
 
 	var $rand_responder;	//RandomResponderオブジェクトを格納する変数
 	var $time_responder;	//TimeResponderオブジェクトを格納する変数
@@ -36,11 +37,7 @@ class Bot {
 
     
 	//コンストラクタ(初期化用メソッド)
-//	function Bot($usr, $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret){
 	function Bot(){
-		//$this->user = $usr;
-		//OAuthオブジェクトの生成
-		//$this->Obj = new TwitterOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
 
 		//Dictionaryオブジェクトの生成
 		$this->dic = new Dictionary();
@@ -49,7 +46,8 @@ class Bot {
 		$this->emotion = new Emotion($this->dic);
 
 		//Responderオブジェクトを生成する際にDictionaryオブジェクトを渡す
-
+        $this->yahoo_morph = new Yahoo_morph();
+		
 		//RandomResponderオブジェクトの生成
 		$this->rand_responder = new RandomResponder('Random', $this->dic);
 		//TimeResponderオブジェクトの生成
@@ -57,7 +55,7 @@ class Bot {
 		//WhatResponderオブジェクトの生成
 		$this->what_responder = new WhatResponder('What', $this->dic);
 		//GreetingResponderオブジェクトの生成
-    	$this->greet_responder = new GreetingResponder('Greeting');
+    	$this->greet_responder = new GreetingResponder('Greeting', $this->dic);
 		//PatternResponderオブジェクトの生成
     	$this->pattern_responder = new PatternResponder('Pattern');
 
@@ -77,23 +75,26 @@ class Bot {
 	//テキストをResponderオブジェクトに渡すメソッド(リプライ用)
 	function Conversation($input) {
 
-		//ResponderにPatternResponderを使う
-		$this->responder = $this->pattern_responder;
-		
-//		$this->responder = $this->markov_responder;
-		//宛先のユーザ名(@xxxx)を消す
-		$input = trim(preg_replace("/@[a-zA-Z0-9]+/", "", $input));
+		//Responderに使う
+		$this->responder = $this->template_responde;
+		//$this->responder = $this->pattern_responder;
+		//$this->responder = $this->markov_responder;
 
-	
+		//宛先のユーザ名(@xxxx)を消す
+		$input = trim(preg_replace("/@[a-zA-Z0-9_]+/", "", $input));
+
 		//パターンマッチを行い感情を変動させる
 		$this->emotion->Update($input);
+		
+			
+		//形態素解析の結果を取得
+		$words = $this->yahoo_morph->Request($input);
+		
 		//Studyメソッドにテキストを渡し学習する
 		//引数$wordsで形態素解析の結果を渡せるように変更
-		var_dump("===Debug要引数wordsがありません=========");
 		$this->dic->Study($input, $words);
-		
-		var_dump("===Debug要 Response($input)用に変更しないといけないかも=========");
-		return $this->responder->Response($input);
+
+		return $this->responder->Response($input, $this->emotion->mood, $words);
 	}
 
 

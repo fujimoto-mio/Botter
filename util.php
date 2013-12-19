@@ -31,7 +31,6 @@ class Web_API {
 
 	//Web APIのリクエストURLを生成するメソッド
 	function Request($url, $params) {
-
 		//パラメーターと値をURLエンコードする
 		$encoded_params = array();
 		foreach($params as $k => $v) {
@@ -55,7 +54,10 @@ class Get_content extends Web_API {
 
 	//リクエストを送信して結果を取得するメソッド
 	function Load_file($req) {
-		return file_get_contents($req);
+				var_dump($req."??QQQ=" );
+		
+//		return file_get_contents($req);
+		return simplexml_load_file($req);
 	}
 
 }

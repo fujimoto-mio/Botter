@@ -554,10 +554,18 @@ class EasyBotter
             $url .= 'since_id=' . $since_id ."&";
         }        
         $url .= "count=" .$num ;
+		
         $response = $this->_getData($url);
+		if($response["errors"]){
+            echo $response["errors"][0]["message"];               
+		} else{
+	        echo "error Array（配列）を文字変換（？）しようとしている?===";
+		}
+
+		/*
         if($response["errors"]){
             echo $response["errors"][0]["message"];               
-        }                   
+        }               */    
         return $response;
     }
 
@@ -624,7 +632,7 @@ class EasyBotter
 		$opt['image'] = "@".$image.";type=image/png;filename=".$no.".png";
 		
 		$req = $this->ImageRequest("POST", $opt);
-		var_dump($req);
+		//var_dump($req);
 	}
 	
 //---------------------------------------------------------------------------------------------------------------
@@ -886,7 +894,7 @@ class EasyBotter
 		//無視するユーザーIDの一覧を取得する
 		$pass_list = $this->myBot->ReadData("Pass");
 
-		var_dump("===================================");
+		var_dump($timeline2."===================================");
 
 		//ボット宛てのリプライ処理
 		//タイムラインの処理
@@ -913,7 +921,7 @@ class EasyBotter
 			}
 			
 			//同じ相手でリプライ済みなら返信しないようにする
-			//if(in_array($screen_name, $replied_users)) {continue;}
+			if(in_array($screen_name, $replied_users)) {continue;}
 						
 			//Webからの投稿以外なら返信カウンタをチェックする
 			if(!stristr($source, 'web')) {
@@ -923,9 +931,12 @@ class EasyBotter
 				if(!$reply_cnt) {$reply_cnt = 0;}
 				//上限値に達していたら
 				if($reply_cnt >= $reply_limit) {
+			  		var_dump($reply_cnt .">=". $reply_limit."=reply_cnt_file返信カウンタファイルを削除して、返信処理をスキップする");
 					//返信カウンタファイルを削除して、返信処理をスキップする
-					unlink($reply_cnt_file);
+  				    unset($reply_cnt_file);
+					//unlink($reply_cnt_file);
 					continue;
+					 
 				}
 			}
 
@@ -952,7 +963,6 @@ class EasyBotter
 				//$txt=$this->myBot->Conversation($text,$user);
 				var_dump($txt."=を".$user."に渡す==");
 
-				
 				//コマンドプロンプトでの出力確認用
 				$text = $this->myBot->ResponderName()."(".$this->myBot->emotion->mood.") -> ".$txt;
 				var_dump($text."=出力確認用==");
@@ -965,8 +975,6 @@ class EasyBotter
                 	//フッターを追加
                 	$status .= $this->_footer;                       
                 	$this->showResult($this->setUpdate(array("status"=>$status)), $status);            
-
-						
 					
 					//$this->myBot->Post("@".$screen_name." ".$txt, $sid);
 					//返信済みユーザーを配列に記憶する

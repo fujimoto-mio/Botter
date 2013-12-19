@@ -45,49 +45,10 @@ $response = $eb->replyTimeline(2,"reply_pattern.php");
 $user = "preciousone_p1";
 //$response = $eb->emotion(2, $user);
 //$response = $eb->Mentions(2, $user);
-//$response = $myBot->replyTimeline(2,"reply_pattern.php");
+//$response = $eb->replyTimeline(2,"reply_pattern.php");
 $response = $eb->StudyBot(2, $user);
-  
 
-   
 /*
-
-
-//無視するユーザーIDの一覧を取得する
-$pass_list = $myBot->ReadData("Pass");
-//無視するユーザーIDが一致したら、返信処理をスキップする
-foreach($pass_list as $p) {if($p == $uid) {continue 2;}}
-//相互フォローしているユーザーの発言、またはボット宛てのリプライなら
-if(stristr($input, "@".$user) || !strstr($input, "@")) {
-
-		//現在の機嫌値をファイルから読み込んでセットする
-		if(MOOD_MODE){$myBot->emotion->User_mood($uid); }
-
-		//送信する文字列の取得
-		//引数$userにはユーザー名を渡す
-		$txt=$myBot->Conversation($text,$user);
-
-		//コマンドプロンプトでの出力確認用
-		if(DEBUG_MODE){Util::Debug_print($myBot->ResponderName()."(".$myBot->emotion->mood.") -> ".$txt);}
-		//$txtが空でなかったら送信する
-		if($txt){
-			$myBot->Post("@".$screen_name." ".$txt, $sid);
-			//返信済みユーザーを配列に記憶する
-			$replied_users[] = $screen_name;
-
-			//返信カウンタを+1して保存する
-			$reply_cnt++;
-			$myBot->WriteData($uid."Count", $reply_cnt);
-		}
-
-var_dump("とぃってぼｔ＝＝＝＝＝".$response);
-}
-
-*/
-
-		
-/*
-
 //===================================================
 //EasyBotter 簡易マニュアル
 //===================================================

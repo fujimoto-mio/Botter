@@ -20,12 +20,11 @@ class Yahoo_morph {
 		);
 
 		$url = "http://jlp.yahooapis.jp/MAService/V1/parse";
-
-
 		//APIリクエスト
 		$api = new Web_API("Yahoo_Morph");
+		
 		$this->xml = $api->Request($url, $params);
-
+        //foreach ($this->xml->ma_result->word_list->word as $cur){var_dump("debug".$cur->surface); }		
 		return $this->xml->ma_result->word_list->word;
 	}
 

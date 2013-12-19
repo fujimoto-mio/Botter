@@ -25,9 +25,6 @@ class Responder {
 	//受け取った文字列をそのまま返すメソッド
 	//機嫌値($mood)を渡せるように変更
 	function Response($text,$mood) {
-		
-		
-		
 		return $text;
 	}
 
@@ -133,13 +130,13 @@ class PatternResponder extends Responder {
 		}
 		$file = file($dic);
 	
-
+		echo $dic." ***fileOpen PatternResponder***";
 		foreach ($file as $line) {
 			list($key, $val) = split("\t", chop($line));
 			$ptn['pattern'] = $key;
 			$ptn['phrases'] = $val;
 			array_push($this->pattern, $ptn);
-			var_dump($line."=");
+			//var_dump($line."=");
 		}
 	}
 	
@@ -149,11 +146,11 @@ class PatternResponder extends Responder {
 		//パターン辞書の先頭行から順にパターンマッチを行う
 		foreach($this->pattern as $key =>$val) {
 			$ptn = $val['pattern'];
-var_dump($ptn."=======");
+//var_dump($ptn."=======");
 			if(preg_match("/".$ptn."/", $text)){
 				$phrases = split("\|", $val['phrases']);
 				$res = $phrases[rand(0, count($phrases) -1)];
-var_dump($res."=======");
+var_dump($res."match=======");
 				return preg_replace("/%match%/", $ptn, $res);
 			}
 		}

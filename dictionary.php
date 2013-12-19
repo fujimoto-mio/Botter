@@ -123,6 +123,12 @@ class Dictionary {
 				return;
 			}
 		}
+		
+		foreach ($words->ma_result->word_list->word as $cur){
+			//echo pg_escape_string($cur->surface)." | ";
+			var_dump("analize.debug=".$cur->surface);
+		}
+		
 
 		$this->Study_Random($text);
 		$this->Study_Pattern($text,$words);

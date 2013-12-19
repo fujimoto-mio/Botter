@@ -23,9 +23,9 @@ class Responder {
 	}
 
 	//受け取った文字列をそのまま返すメソッド
-	//機嫌値($mood)を渡せるように変更
-	function Response($text,$mood) {
-		return $text;
+	//形態素解析結果($words)を渡せるように変更
+	function Response($text, $mood, $words) {
+		return ""; //何も返さないように変更する
 	}
 
 	//名前を返すメソッド
@@ -142,19 +142,19 @@ class PatternResponder extends Responder {
 	
 	//パターン辞書を元に応答メッセージを作るメソッド
 	function Response($text/*, $mood*/) {
-
+		$this->util = new Util();
 		//パターン辞書の先頭行から順にパターンマッチを行う
 		foreach($this->pattern as $key =>$val) {
 			$ptn = $val['pattern'];
-//var_dump($ptn."=======");
 			if(preg_match("/".$ptn."/", $text)){
 				$phrases = split("\|", $val['phrases']);
 				$res = $phrases[rand(0, count($phrases) -1)];
-var_dump($res."match=======");
+				var_dump($res."match=======");
 				return preg_replace("/%match%/", $ptn, $res);
 			}
 		}
-
+		//応答例がなかったら、ランダム辞書から応答例を持ってくる
+		return $this->util->Select_random($this->dictionary->random);
 	}
 }
 
@@ -163,10 +163,10 @@ var_dump($res."match=======");
 //TemplateResponderクラスの定義(Responderクラスを継承)
 class TemplateResponder extends Responder {
 
-
 	//テンプレート辞書を元に応答メッセージを作るメソッド
 	//引数$wordsに形態素解析の結果を渡す
 	function Response($text, $mood, $words) {
+		$this->util = new Util();
 		//文章に含まれるキーワード(名詞)を配列に格納
 		$keywords = array();
 		foreach($words as $k => $v) {
@@ -186,18 +186,18 @@ class TemplateResponder extends Responder {
 			}
 			return $template;
 		}
-		//テンプレートがなかったら、ランダム辞書から応答例を持ってくる
-//		if(USE_RANDOM_DIC) {return Util::Select_random($this->dictionary->random);}
-
+		//応答例がなかったら、ランダム辞書から応答例を持ってくる
+		return $this->util->Select_random($this->dictionary->random);
 	}
 }
 
 
 //MarkovResponderクラスの定義(Responderクラスを継承)
 class MarkovResponder extends Responder {
-
 	function Response($text, $mood, $words) {
-	$keywords=array();
+		$this->util = new Util();
+
+		$keywords=array();
 		//キーワード(名詞)の抽出
 		foreach($words as $v) {
 			if(preg_match("/名詞/", $v->pos)) {
@@ -210,9 +210,8 @@ class MarkovResponder extends Responder {
 			$res = $this->dictionary->markov->Generate(chop($keyword));
 			if($res) {return $res;}
 		}
-	//応答例がなかったら、ランダム辞書から応答例を持ってくる
-//あとでつかう
-	///	if(USE_RANDOM_DIC) {return Util::Select_random($this->dictionary->random);}
+		//応答例がなかったら、ランダム辞書から応答例を持ってくる
+		return $this->util->Select_random($this->dictionary->random);
 	}
 
 }

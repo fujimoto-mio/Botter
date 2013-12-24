@@ -7,7 +7,6 @@ define("MODE_MIN", "-15");	//機嫌値下限
 define("MODE_MAX", "15");	//機嫌値上限
 define("MODE_RECOVERY", "0.5");	//機嫌値の回復する度合い
 
-
 //Emotionクラスの定義
 class Emotion {
 
@@ -50,7 +49,7 @@ class Emotion {
 				break;
 			}
 		}
-		echo $this->mood ."===機嫌を徐々に平静な状態====";
+		if(DEBUG_MODE){echo $this->mood ."===機嫌を徐々に平静な状態====";}
 
 		//機嫌を徐々に平静な状態(機嫌値0)に回復させる処理
 		if($this->mood < 0) {

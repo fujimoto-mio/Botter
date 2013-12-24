@@ -130,7 +130,7 @@ class PatternResponder extends Responder {
 		}
 		$file = file($dic);
 	
-		echo $dic." ***fileOpen PatternResponder***";
+		if(DEBUG_MODE){echo $dic." ***fileOpen PatternResponder***";}
 		foreach ($file as $line) {
 			list($key, $val) = split("\t", chop($line));
 			$ptn['pattern'] = $key;
@@ -149,7 +149,7 @@ class PatternResponder extends Responder {
 			if(preg_match("/".$ptn."/", $text)){
 				$phrases = split("\|", $val['phrases']);
 				$res = $phrases[rand(0, count($phrases) -1)];
-				var_dump($res."match=======");
+				if(DEBUG_MODE){var_dump($res."match=======");}
 				return preg_replace("/%match%/", $ptn, $res);
 			}
 		}
@@ -205,12 +205,13 @@ class MarkovResponder extends Responder {
 			}
 		}
 		//キーワードから文章を生成し表示
-		if(count($keywords)) {
+				if(count($keywords)) {
 			$keyword = $keywords[rand(0, count($keywords) - 1)];
 			$res = $this->dictionary->markov->Generate(chop($keyword));
+			if(DEBUG_MODE){var_dump($res.$keywords.$text. $mood. $words."//------------------------------//");}
 			if($res) {return $res;}
 		}
-		//応答例がなかったら、ランダム辞書から応答例を持ってくる
+		if(DEBUG_MODE){var_dump($text. $mood. $words."応答例がなかったら、ランダム辞書から応答例を持ってくる============");}
 		return $this->util->Select_random($this->dictionary->random);
 	}
 

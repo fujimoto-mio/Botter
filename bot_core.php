@@ -14,8 +14,6 @@ require_once("emotion.php");
 //morphemeクラスの読み込み
 require_once("morpheme.php");
 
-
-
 //Botクラスの定義
 class Bot {
 	//メンバ変数
@@ -80,7 +78,7 @@ class Bot {
 
 		//Responderをランダムに切り替える
 		$sel = rand(1, 100); //乱数生成
-
+/*
 		//乱数の値によってResponderを切り替える
 		if($sel > 0 && $sel < 10) {
 			echo "pattern";
@@ -98,7 +96,8 @@ class Bot {
 			echo "null";
 			$this->responder = $this->null_responder;
 		}
-
+*/
+		$this->responder = $this->markov_responder;
 		//宛先のユーザ名(@xxxx)を消す
 		$input = trim(preg_replace("/@[a-zA-Z0-9_]+/", "", $input));
 

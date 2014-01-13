@@ -130,7 +130,7 @@ class PatternResponder extends Responder {
 		}
 		$file = file($dic);
 	
-		echo $dic." ***fileOpen PatternResponder***";
+		if(DEBUG_MODE){echo $dic." ***fileOpen PatternResponder***";}
 		foreach ($file as $line) {
 			list($key, $val) = split("\t", chop($line));
 			$ptn['pattern'] = $key;
@@ -149,7 +149,7 @@ class PatternResponder extends Responder {
 			if(preg_match("/".$ptn."/", $text)){
 				$phrases = split("\|", $val['phrases']);
 				$res = $phrases[rand(0, count($phrases) -1)];
-				var_dump($res."match=======");
+				if(DEBUG_MODE){var_dump($res."match=======");}
 				return preg_replace("/%match%/", $ptn, $res);
 			}
 		}
@@ -196,6 +196,7 @@ class TemplateResponder extends Responder {
 class MarkovResponder extends Responder {
 	function Response($text, $mood, $words) {
 		$this->util = new Util();
+		if(DEBUG_MODE){var_dump($text);var_dump($mood);var_dump($words);var_dump("Markov========");}
 
 		$keywords=array();
 		//キーワード(名詞)の抽出
@@ -204,13 +205,15 @@ class MarkovResponder extends Responder {
 				array_push($keywords, $v->surface);
 			}
 		}
+		if(DEBUG_MODE){var_dump("=next=====================");var_dump($keywords);}
 		//キーワードから文章を生成し表示
 		if(count($keywords)) {
 			$keyword = $keywords[rand(0, count($keywords) - 1)];
 			$res = $this->dictionary->markov->Generate(chop($keyword));
+			if(DEBUG_MODE){var_dump($res);var_dump($keywords);var_dump($text);var_dump($mood);var_dump($words);var_dump("//------------------------------//");}
 			if($res) {return $res;}
 		}
-		//応答例がなかったら、ランダム辞書から応答例を持ってくる
+		if(DEBUG_MODE){var_dump($text);var_dump($mood);var_dump($words);var_dump("応答例がなかったら、ランダム辞書から応答例を持ってくる============");}
 		return $this->util->Select_random($this->dictionary->random);
 	}
 

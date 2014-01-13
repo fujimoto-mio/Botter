@@ -7,6 +7,8 @@ define("CAHIN_MAX", 30);	//文書生成時の最大連鎖数
 define("MARKOV_DIC", "./dic/markovdic.dat");
 define("STARTS_DIC", "./dic/starts.dat");
 
+//デバッグモードのON/OFF(1:ON 0:OFF)
+define("DEBUG_MODE", "1");
 
 
 class Markov {
@@ -25,6 +27,7 @@ class Markov {
 	//マルコフ辞書を作成するメソッド
 	//引数$words形態素解析の結果
 	function Add_Sentence($words) {
+		if(DEBUG_MODE){var_dump("function Add_Sentence==============");var_dump($words);}
 		if(count($words) < 3) {return;}
 
 		//単語を配列に格納
@@ -74,7 +77,8 @@ class Markov {
 			$prifix2 = $suffix;
 			$loop += 1;
 		}
-		var_dump("マルコフ連鎖ー実行Generate");
+		//デバッグモードのON/OFF(1:ON 0:OFF)
+		if(DEBUG_MODE){var_dump("マルコフ連鎖ー実行Generate");}
 		//$words格納された単語を1つにつなげて文章を生成する
 		return join("", $words);
 	}
@@ -82,7 +86,7 @@ class Markov {
 
 	//辞書($dic)にサフィクスを追加するメソッド
 	private function Add_Suffix($prifix1, $prifix2, $suffix) {
-		//var_dump("##".$prifix1."##". $prifix2."##".$suffix);
+		if(DEBUG_MODE){var_dump("##".$prifix1."##". $prifix2."##".$suffix);}
 		if(!isset($this->dic[$prifix1])) {$this->dic[$prifix1] = array();}
 		if(!isset($this->dic[$prifix1][$prifix2])) {$this->dic[$prifix1][$prifix2] = array();}
 //		if(!$this->dic[$prifix1]) {$this->dic[$prifix1] = array();}
@@ -93,8 +97,9 @@ class Markov {
 
 	//文書の先頭の単語をハッシュ$startsに登録するメソッド
 	private function Add_Start($prifix1) {
+		$this->starts=array();
 		if(!isset($this->starts[$prifix1])) {$this->starts[$prifix1] = 0;}
-//		if(!$this->starts[$prifix1]) {$this->starts[$prifix1] = 0;}
+		if(DEBUG_MODE){var_dump("!!".$prifix1);}
 		$this->starts[$prifix1] += 1;
 	}
 
@@ -128,13 +133,15 @@ class Markov {
 		$file = file(MARKOV_DIC);
 		if($file) {
 			//逆シリアル化
-			$data = unserialize($file[0]);
+			$data = json_decode($file[0]);
 			$this->dic = $data;
+			if(DEBUG_MODE){var_dump($data);var_dump("data---------------");}
 		}
 		$file = file(STARTS_DIC);
 		if($file) {
 			//逆シリアル化
-			$data = unserialize($file[0]);
+			$data = base64_decode(html_entity_decode($file[0], ENT_QUOTES));
+			//$data = unserialize($file[0]);
 			$this->starts = $data;
 		}
 

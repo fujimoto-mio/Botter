@@ -14,8 +14,6 @@ require_once("emotion.php");
 //morphemeクラスの読み込み
 require_once("morpheme.php");
 
-
-
 //Botクラスの定義
 class Bot {
 	//メンバ変数
@@ -83,37 +81,40 @@ class Bot {
 
 		//乱数の値によってResponderを切り替える
 		if($sel > 0 && $sel < 10) {
-			echo "pattern";
+			echo "pattern===========================\n";
 			$this->responder = $this->pattern_responder;
 		} elseif($sel >= 10 && $sel < 20) {
-			echo "template";
+			echo "template===========================\n";
 			$this->responder = $this->template_responde;
 		} elseif($sel >= 20 && $sel <= 70) {
-			echo "markov";
+			echo "markov===========================\n";
 			$this->responder = $this->markov_responder;
 		}elseif($sel >= 70 && $sel < 80) {
-			echo "rand";
+			echo "rand===========================\n";
 			$this->responder = $this->rand_responder;
 		} else {
-			echo "null";
+			echo "null===========================\n";
 			$this->responder = $this->null_responder;
 		}
-
+		//$this->responder = $this->markov_responder;
+		
 		//宛先のユーザ名(@xxxx)を消す
 		$input = trim(preg_replace("/@[a-zA-Z0-9_]+/", "", $input));
 
 		//パターンマッチを行い感情を変動させる
 		$this->emotion->Update($input);
 		
-			
 		//形態素解析の結果を取得
 		$words = $this->yahoo_morph->Request($input);
 		
 		//Studyメソッドにテキストを渡し学習する
 		//引数$wordsで形態素解析の結果を渡せるように変更
+		if(DEBUG_MODE){var_dump($input."!=====");}
+		if(DEBUG_MODE){var_dump($words);}
 		$this->dic->Study($input, $words);
-
-		return $this->responder->Response($input, $this->emotion->mood, $words);
+		$text = $this->responder->Response($input, $this->emotion->mood, $words);
+		var_dump("返す文字===".$text);
+		return $text;
 	}
 
 

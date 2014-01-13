@@ -8,7 +8,7 @@ define("MARKOV_DIC", "./dic/markovdic.dat");
 define("STARTS_DIC", "./dic/starts.dat");
 
 //デバッグモードのON/OFF(1:ON 0:OFF)
-define("DEBUG_MODE", "0");
+define("DEBUG_MODE", "1");
 
 
 class Markov {
@@ -27,6 +27,7 @@ class Markov {
 	//マルコフ辞書を作成するメソッド
 	//引数$words形態素解析の結果
 	function Add_Sentence($words) {
+		if(DEBUG_MODE){var_dump("function Add_Sentence==============");var_dump($words);}
 		if(count($words) < 3) {return;}
 
 		//単語を配列に格納
@@ -96,8 +97,9 @@ class Markov {
 
 	//文書の先頭の単語をハッシュ$startsに登録するメソッド
 	private function Add_Start($prifix1) {
+		$this->starts=array();
 		if(!isset($this->starts[$prifix1])) {$this->starts[$prifix1] = 0;}
-//		if(!$this->starts[$prifix1]) {$this->starts[$prifix1] = 0;}
+		if(DEBUG_MODE){var_dump("!!".$prifix1);}
 		$this->starts[$prifix1] += 1;
 	}
 
@@ -133,12 +135,13 @@ class Markov {
 			//逆シリアル化
 			$data = json_decode($file[0]);
 			$this->dic = $data;
-			var_dump("---------------".$data);
+			if(DEBUG_MODE){var_dump($data);var_dump("data---------------");}
 		}
 		$file = file(STARTS_DIC);
 		if($file) {
 			//逆シリアル化
-			$data = unserialize($file[0]);
+			$data = base64_decode(html_entity_decode($file[0], ENT_QUOTES));
+			//$data = unserialize($file[0]);
 			$this->starts = $data;
 		}
 

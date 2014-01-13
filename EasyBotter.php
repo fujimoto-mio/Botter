@@ -407,14 +407,14 @@ class EasyBotter
     function selectTweets($tweets){    
         $tweets2 = array();
         foreach($tweets as $tweet){
-            //自分自身のつぶやきを除外する
+        	//自分自身のつぶやきを除外する
             if($this->_screen_name == $tweet["user"]["screen_name"]){
                 continue;
             }                        
             //RT, QTを除外する
             if(strpos($tweet["text"],"RT") != FALSE || strpos($tweet["text"],"QT") != FALSE){
                 continue;
-            }                        
+            }                       
             $tweets2[] = $tweet;                                        
         }    
         return $tweets2;    
@@ -556,13 +556,9 @@ class EasyBotter
 		if($response["errors"]){
             echo $response["errors"][0]["message"];               
 		} else{
-	        if(DEBUG_MODE){echo "error Array（配列）を文字変換（？）しようとしている?===";}
+	        if(DEBUG_MODE){var_dump("（配列）を文字変換===");}
 		}
-
-		/*
-        if($response["errors"]){
-            echo $response["errors"][0]["message"];               
-        }               */    
+ 
         return $response;
     }
 
@@ -599,7 +595,6 @@ class EasyBotter
             $url .= '?resources=' . $resources;
         }
         $response = $this->_getData($url);    
-        var_dump($response);
     }
 	
 	
@@ -758,7 +753,6 @@ class EasyBotter
         $timeline2 = $this->selectTweets($timeline2);
         $timeline2 = array_reverse($timeline2);        
 
-
 		//フォロー・リムーブ処理
 		//最後に取得したリプライのIDを取得する
 		$since_id = $this->myBot->ReadData("Mentions");
@@ -768,8 +762,6 @@ class EasyBotter
 		$reply_limit = 3;
 		//無視するユーザーIDの一覧を取得する
 		$pass_list = $this->myBot->ReadData("Pass");
-
-        var_dump("=======================================================");
 
 		//ボット宛てのリプライ処理
 		//タイムラインの処理
@@ -877,11 +869,9 @@ class EasyBotter
         $timeline2 = $this->getRecentTweets($timeline, $cron);   
         $timeline2 = $this->selectTweets($timeline2);
         $timeline2 = array_reverse($timeline2);        
-
-
 		//フォロー・リムーブ処理
 		//最後に取得したリプライのIDを取得する
-		$since_id = $this->myBot->ReadData("Mentions");
+		$since_id = $this->myBot->ReadData("StudyBot");
 		//リプライ済みユーザーを格納する配列の初期化
 		$replied_users = array();
 		//ボット相手に返信する上限回数
@@ -889,7 +879,7 @@ class EasyBotter
 		//無視するユーザーIDの一覧を取得する
 		$pass_list = $this->myBot->ReadData("Pass");
 
-		if(DEBUG_MODE){var_dump($timeline2."===================================");}
+		if(DEBUG_MODE){var_dump($timeline2);var_dump("↑timeline===================================");}
 
 		//ボット宛てのリプライ処理
 		//タイムラインの処理
@@ -897,7 +887,7 @@ class EasyBotter
 			$txt = null;
 			//発言のIDの取得
 			$sid = $Timeline["id"];
-			//var_dump($Timeline);
+			if(DEBUG_MODE){var_dump("timeline in foreach===============");}
 					
 			//ユーザーのスクリーン名の取得
 			$screen_name = $Timeline["user"]["screen_name"];
@@ -937,21 +927,21 @@ class EasyBotter
 
 			//無視するユーザーIDが一致したら、返信処理をスキップする
 			foreach($pass_list as $p) {if($p == $uid) {continue 2;}}
-		
 			
-			  //取得したテキストを表示コマンドプロンプトでの出力確認用
-			  if(DEBUG_MODE){var_dump($screen_name."==".$user."====!===========");}
+			  //ユーザ名の確認
+			  if(DEBUG_MODE){var_dump($screen_name."==".$user."=ユーザ名の確認==============");}
 			  $input = $screen_name;
 			  //相互フォローしているユーザーの発言、またはボット宛てのリプライなら
-		 	  if(stristr($input, "@".$user) || !strstr($input, "@")) {
+			  if(DEBUG_MODE){var_dump($input."=".$user."フォローしているユーザーの発言、またはボット宛てのリプライなら==");}
+			  
+			  if(stristr($input, "@".$user) || !strstr($input, "@")) {
 		
 				//現在の機嫌値をファイルから読み込んでセットする
 				$this->myBot->emotion->User_mood($user);
 
-				if(DEBUG_MODE){var_dump($input."=".$user."フォローしているユーザーの発言、またはボット宛てのリプライなら==");}
-						
 				//送信する文字列の取得
 				//引数$userにはユーザー名を渡す
+				if(DEBUG_MODE){var_dump($user."==1送信文字取得");}
 				$txt=$this->myBot->Conversation($text);
 				//$txt=$this->myBot->Conversation($text,$user);
 				if(DEBUG_MODE){var_dump($txt."=を".$user."に渡す==");}

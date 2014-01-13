@@ -116,6 +116,7 @@ class Dictionary {
 
 	//学習メソッドを呼び出すメソッド
 	function Study($text, $words) {
+		if(DEBUG_MODE){var_dump($text."word?=");var_dump($words);}
 		//禁止語チェック
 		foreach($this->prohibit as $v) {
 			$ptn = "/".$v."/";
@@ -332,7 +333,7 @@ class PatternItem {
 	function Add_phease($text) {
 		//一致する応答例がなかったら応答例にテキストを追加する
 		foreach($this->phrases as $p) {
-			if($p[phrase] == $text) {return;}
+			if($p['phrase'] == $text) {return;}
 		}
 		$ph['need'] = 0;
 		$ph['phrase'] = $text;
